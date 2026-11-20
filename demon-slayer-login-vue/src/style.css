@@ -1,0 +1,336 @@
+:root{
+  --red:        #c8102e;
+  --crimson:    #e63946;
+  --red-deep:   #7a0b1e;
+  --gold:       #d4af37;
+  --gold-light: #f6e3a1;
+  --ink:        #0a0708;
+  --ink-2:      #160d10;
+  --paper:      #f6efe4;
+  --muted:      #b9a99b;
+  --wisteria:   #8e6bb0;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+html,body{height:100%}
+
+body{
+  font-family:"Noto Serif SC","Songti SC","STSong","Yu Mincho",serif;
+  background:var(--ink);
+  color:var(--paper);
+  overflow:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ================= 背景层 ================= */
+.scene{position:fixed;inset:0;overflow:hidden;z-index:0}
+
+.sky{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(120% 80% at 72% 34%, rgba(200,16,46,.30) 0%, rgba(122,11,30,.14) 35%, transparent 62%),
+    radial-gradient(90% 70% at 20% 90%, rgba(142,107,176,.14) 0%, transparent 60%),
+    linear-gradient(180deg,#120609 0%,#1a080c 38%,#0c0507 78%,#060304 100%);
+}
+
+/* 星空 */
+.stars{position:absolute;inset:0;opacity:.5}
+
+/* 红日 */
+.sun{
+  position:absolute;left:72%;top:27%;
+  width:min(30vw,340px);aspect-ratio:1;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:radial-gradient(circle at 42% 38%,#ff7a5c 0%,#e63946 38%,#b00f27 70%,#7a0b1e 100%);
+  box-shadow:0 0 60px rgba(230,57,70,.55),
+             0 0 140px rgba(200,16,46,.35),
+             0 0 240px rgba(200,16,46,.20);
+  animation:sunPulse 7s ease-in-out infinite;
+}
+.sun::after{
+  content:"";position:absolute;inset:-24%;
+  border-radius:50%;
+  border:1px solid rgba(246,227,161,.16);
+  box-shadow:0 0 0 22px rgba(246,227,161,.03),
+             0 0 0 46px rgba(246,227,161,.025);
+}
+@keyframes sunPulse{
+  0%,100%{box-shadow:0 0 60px rgba(230,57,70,.5),0 0 140px rgba(200,16,46,.3),0 0 240px rgba(200,16,46,.18)}
+  50%    {box-shadow:0 0 80px rgba(230,57,70,.68),0 0 170px rgba(200,16,46,.42),0 0 280px rgba(200,16,46,.26)}
+}
+
+/* 山脉 */
+.mountains{position:absolute;left:0;right:0;bottom:0;width:100%;height:56%;pointer-events:none}
+
+/* 云纹 */
+.clouds{position:absolute;left:0;right:0;top:8%;height:40%;opacity:.10;pointer-events:none}
+
+/* 麻叶纹样 */
+.pattern{
+  position:absolute;inset:0;opacity:.045;pointer-events:none;
+  background-image:
+    radial-gradient(circle at center, transparent 22%, var(--gold-light) 23%, var(--gold-light) 24%, transparent 25%),
+    radial-gradient(circle at center, transparent 46%, var(--gold-light) 47%, var(--gold-light) 48%, transparent 49%);
+  background-size:56px 56px;
+}
+
+/* 底部暗角 */
+.vignette{
+  position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(120% 90% at 50% 46%,transparent 42%,rgba(3,1,2,.72) 100%);
+}
+
+canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+
+/* ================= 内容层 ================= */
+.wrap{
+  position:relative;z-index:2;
+  min-height:100%;
+  display:flex;align-items:center;justify-content:center;
+  padding:32px 18px;
+}
+
+.card{
+  position:relative;
+  width:min(92vw,430px);
+  padding:44px 40px 34px;
+  border-radius:18px;
+  background:linear-gradient(160deg,rgba(28,14,17,.86),rgba(12,7,9,.9));
+  border:1px solid rgba(246,227,161,.28);
+  box-shadow:
+    0 0 0 1px rgba(200,16,46,.14),
+    0 26px 70px rgba(0,0,0,.65),
+    inset 0 1px 0 rgba(255,255,255,.06);
+  backdrop-filter:blur(9px) saturate(120%);
+  -webkit-backdrop-filter:blur(9px) saturate(120%);
+  animation:cardIn .9s cubic-bezier(.16,1,.3,1) both;
+}
+@keyframes cardIn{
+  from{opacity:0;transform:translateY(26px) scale(.97)}
+  to  {opacity:1;transform:none}
+}
+
+/* 四角日式装饰 */
+.corner{position:absolute;width:26px;height:26px;border:2px solid var(--gold);opacity:.7}
+.corner.tl{top:9px;left:9px;border-right:0;border-bottom:0;border-top-left-radius:10px}
+.corner.tr{top:9px;right:9px;border-left:0;border-bottom:0;border-top-right-radius:10px}
+.corner.bl{bottom:9px;left:9px;border-right:0;border-top:0;border-bottom-left-radius:10px}
+.corner.br{bottom:9px;right:9px;border-left:0;border-top:0;border-bottom-right-radius:10px}
+
+/* Logo */
+.brand{text-align:center;margin-bottom:6px}
+.crest{
+  width:58px;height:58px;margin:0 auto 12px;
+  display:grid;place-items:center;
+  border-radius:50%;
+  background:radial-gradient(circle at 40% 35%,#e63946,#8b0a1c 72%);
+  box-shadow:0 0 0 2px rgba(246,227,161,.55),0 0 22px rgba(230,57,70,.6);
+  position:relative;
+}
+.crest::before{
+  content:"";position:absolute;inset:5px;border-radius:50%;
+  border:1px dashed rgba(246,227,161,.6);
+}
+.crest svg{width:30px;height:30px;position:relative}
+
+.brand h1{
+  font-size:30px;letter-spacing:.14em;font-weight:700;
+  background:linear-gradient(180deg,#fff6e6,#e8c979 70%,#b8862f);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:0 2px 14px rgba(212,175,55,.25);
+}
+.brand .en{
+  margin-top:5px;font-family:Georgia,serif;
+  font-size:10px;letter-spacing:.42em;color:var(--muted);text-transform:uppercase;
+}
+.brand .tag{
+  margin-top:12px;font-size:12px;letter-spacing:.22em;color:var(--crimson);
+}
+.brand .tag::before,.brand .tag::after{content:"✦";margin:0 10px;color:var(--gold);font-size:9px;vertical-align:2px}
+
+.divider{
+  display:flex;align-items:center;gap:12px;margin:22px 0 24px;
+  color:var(--gold);font-size:11px;letter-spacing:.2em;opacity:.75;
+}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(212,175,55,.5),transparent)}
+
+/* 表单 */
+.field{position:relative;margin-bottom:20px}
+.field label{
+  display:block;font-size:12px;letter-spacing:.12em;color:var(--muted);margin-bottom:8px;
+}
+.input-box{position:relative;display:flex;align-items:center}
+.input-box .ico{
+  position:absolute;left:14px;width:18px;height:18px;color:var(--gold);opacity:.8;pointer-events:none;
+}
+.field input{
+  width:100%;height:48px;
+  padding:0 14px 0 44px;
+  background:rgba(255,255,255,.035);
+  border:1px solid rgba(246,227,161,.18);
+  border-radius:10px;
+  color:var(--paper);
+  font-family:inherit;font-size:14px;letter-spacing:.04em;
+  outline:none;transition:.25s ease;
+}
+.field input::placeholder{color:#7d6f68}
+.field input:focus{
+  border-color:rgba(230,57,70,.75);
+  background:rgba(230,57,70,.06);
+  box-shadow:0 0 0 3px rgba(230,57,70,.12),0 0 18px rgba(230,57,70,.18);
+}
+.field input:focus + .line{transform:scaleX(1)}
+.line{
+  position:absolute;left:0;right:0;bottom:-1px;height:2px;
+  background:linear-gradient(90deg,var(--crimson),var(--gold));
+  transform:scaleX(0);transition:transform .3s ease;border-radius:2px;
+}
+
+.row{display:flex;align-items:center;justify-content:space-between;margin:-4px 0 24px;font-size:12px;color:var(--muted)}
+.remember{display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+.remember input{accent-color:var(--crimson);width:15px;height:15px;cursor:pointer}
+.row a{color:var(--gold-light);text-decoration:none;transition:color .2s}
+.row a:hover{color:var(--crimson)}
+
+/* 登录按钮 */
+.btn{
+  position:relative;width:100%;height:50px;
+  border:0;border-radius:10px;cursor:pointer;overflow:hidden;
+  font-family:inherit;font-size:15px;font-weight:700;letter-spacing:.28em;
+  color:#fff6e6;
+  background:linear-gradient(135deg,#e63946,#c8102e 55%,#8b0a1c);
+  box-shadow:0 10px 26px rgba(200,16,46,.38),inset 0 1px 0 rgba(255,255,255,.25);
+  transition:transform .18s ease,box-shadow .25s ease,filter .25s ease;
+}
+.btn:hover{
+  transform:translateY(-2px);
+  filter:brightness(1.08);
+  box-shadow:0 14px 34px rgba(230,57,70,.55),inset 0 1px 0 rgba(255,255,255,.3);
+}
+.btn:active{transform:translateY(0) scale(.99)}
+.btn::before{
+  content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);
+  transform:skewX(-20deg);
+  transition:left .6s ease;
+}
+.btn:hover::before{left:130%}
+.btn span{position:relative;z-index:2}
+
+.signup{
+  text-align:center;margin-top:22px;font-size:12px;color:var(--muted);letter-spacing:.06em;
+}
+.signup a{color:var(--gold-light);text-decoration:none;font-weight:700;margin-left:4px;transition:color .2s}
+.signup a:hover{color:var(--crimson)}
+
+.footnote{
+  text-align:center;margin-top:20px;font-size:10px;color:#6b5c56;letter-spacing:.14em;
+}
+
+/* 登录成功遮罩 */
+.overlay{
+  position:fixed;inset:0;z-index:9;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;
+  background:radial-gradient(circle at 50% 45%,rgba(122,11,30,.55),rgba(4,2,3,.94) 70%);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  opacity:0;visibility:hidden;transition:opacity .5s ease,visibility .5s;
+  text-align:center;padding:20px;
+}
+.overlay.show{opacity:1;visibility:visible}
+.overlay .seal{
+  width:96px;height:96px;border-radius:50%;
+  display:grid;place-items:center;font-size:44px;
+  background:radial-gradient(circle at 40% 35%,#e63946,#7a0b1e);
+  box-shadow:0 0 0 3px rgba(246,227,161,.5),0 0 50px rgba(230,57,70,.7);
+  animation:sealPop .6s cubic-bezier(.16,1,.3,1) both;
+}
+@keyframes sealPop{from{transform:scale(.3) rotate(-40deg);opacity:0}to{transform:none;opacity:1}}
+.overlay h2{margin-top:24px;font-size:26px;letter-spacing:.14em;color:var(--gold-light);animation:cardIn .8s .15s both}
+.overlay p{margin-top:10px;font-size:13px;color:var(--muted);letter-spacing:.1em;animation:cardIn .8s .3s both}
+.overlay button{
+  margin-top:30px;padding:11px 30px;border:1px solid rgba(246,227,161,.5);
+  background:transparent;color:var(--gold-light);border-radius:8px;cursor:pointer;
+  font-family:inherit;letter-spacing:.2em;font-size:12px;transition:.2s;
+  animation:cardIn .8s .45s both;
+}
+.overlay button:hover{background:rgba(246,227,161,.12)}
+
+.shake{animation:shake .4s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+
+@keyframes tw{from{opacity:.15}to{opacity:.9}}
+
+@media(max-width:480px){
+  .card{padding:36px 24px 28px}
+  .brand h1{font-size:26px}
+  .sun{left:78%;width:52vw}
+}
+/* ================= 注册页 & 新功能补充样式 ================= */
+.wrap{overflow-y:auto}
+
+/* 注册卡片字段较多，略微压缩间距 */
+.register-card{padding-top:38px;padding-bottom:26px}
+.register-card .divider{margin:16px 0 20px}
+.register-card .field{margin-bottom:15px}
+.register-card .agree-row{margin:2px 0 16px}
+
+/* 下拉选择框：与输入框保持同款风格 */
+.select-input{
+  width:100%;height:48px;
+  padding:0 14px 0 44px;
+  background:rgba(255,255,255,.035);
+  border:1px solid rgba(246,227,161,.18);
+  border-radius:10px;
+  color:var(--paper);
+  font-family:inherit;font-size:14px;letter-spacing:.04em;
+  outline:none;transition:.25s ease;
+  cursor:pointer;
+  appearance:none;
+  -webkit-appearance:none;
+}
+.select-input:focus{
+  border-color:rgba(230,57,70,.75);
+  background:rgba(230,57,70,.06);
+  box-shadow:0 0 0 3px rgba(230,57,70,.12),0 0 18px rgba(230,57,70,.18);
+}
+.select-input option{background:#1a0d10;color:var(--paper)}
+.select-input:invalid{color:#7d6f68}
+/* 下拉箭头（主题金） */
+.field:has(.select-input) .input-box::after{
+  content:"";position:absolute;right:16px;
+  width:7px;height:7px;border-right:2px solid var(--gold);border-bottom:2px solid var(--gold);
+  transform:rotate(45deg);pointer-events:none;opacity:.8;
+}
+
+/* 错误提示 */
+.error-msg{
+  color:#ff8a8a;font-size:12px;letter-spacing:.06em;
+  margin:-8px 0 14px;padding-left:2px;
+  text-shadow:0 0 10px rgba(230,57,70,.4);
+}
+
+/* 演示账号按钮 */
+.btn-demo{
+  width:100%;height:40px;margin-top:12px;
+  border:1px solid rgba(246,227,161,.35);border-radius:10px;
+  background:rgba(246,227,161,.04);
+  color:var(--gold-light);
+  font-family:inherit;font-size:12px;letter-spacing:.14em;cursor:pointer;
+  transition:.25s ease;
+}
+.btn-demo:hover{background:rgba(246,227,161,.14);border-color:rgba(246,227,161,.6);transform:translateY(-1px)}
+
+/* 登录/注册链接统一样式 */
+.signup a{color:var(--gold-light);text-decoration:none;font-weight:700;margin-left:4px;transition:color .2s}
+.signup a:hover{color:var(--crimson)}
+
+/* 页面切换过渡 */
+.page-enter-active,.page-leave-active{transition:opacity .35s ease,transform .35s ease}
+.page-enter-from{opacity:0;transform:translateY(14px)}
+.page-leave-to{opacity:0;transform:translateY(-14px)}
+
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms!important;transition-duration:.001ms!important}
+}
