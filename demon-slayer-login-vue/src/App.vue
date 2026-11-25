@@ -1,5 +1,12 @@
 <script setup>
+import { onMounted } from 'vue'
 import SceneBackground from './components/SceneBackground.vue'
+import { verifySession } from './utils/accounts.js'
+
+// 应用启动时校验会话：token 无效/过期则清除本地登录态
+onMounted(() => {
+  verifySession()
+})
 </script>
 
 <template>
