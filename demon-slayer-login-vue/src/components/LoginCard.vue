@@ -49,6 +49,11 @@ function handleDemo() {
   welcomeText.value = `${res.account.name}，体验模式已开启。愿你斩断一切魑魅魍魉。`
   showOverlay.value = true
 }
+
+// 登录成功后进入炭治郎战斗页（Vite 通过 /tanjiro-battle.html 提供，与本项目同源）
+function enterBattle() {
+  window.location.href = '/tanjiro-battle.html'
+}
 </script>
 
 <template>
@@ -112,7 +117,10 @@ function handleDemo() {
         <div class="seal">焔</div>
         <h2>欢迎回归，鬼杀队队员</h2>
         <p>{{ welcomeText }}</p>
-        <button @click="showOverlay = false">返 回</button>
+        <div class="overlay-actions">
+          <button class="overlay-primary" @click="enterBattle">拔 刀 · 进 入 战 场</button>
+          <button class="overlay-ghost" @click="showOverlay = false">稍 后</button>
+        </div>
       </div>
     </Teleport>
   </div>

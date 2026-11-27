@@ -6,7 +6,7 @@
 
 - **登录页** `/login`：账号密码校验、错误提示、演示账号一键体验。
 - **注册页** `/register`：名号、口令、确认口令、呼吸流派、队规确认；前端校验（必填、口令长度 ≥6、两次一致）。
-- **注册 → 登录闭环**：注册与登录均调用 Spring Boot 后端接口 `/api/auth/register`、`/api/auth/login`，账号数据存入 MySQL（见后端项目 `D:\workSpace\springBootTest`）。
+- **注册 → 登录闭环**：注册与登录均调用 Spring Boot 后端接口 `/api/auth/register`、`/api/auth/login`，账号数据存后端 `data/kimetsu_users.json`（JSON 文件持久化，重启不丢；见后端项目 `D:\workSpace\springBootTest`）。
 - **前端风格完全保留**：红日、富士山、樱花粒子、毛玻璃卡片等视觉不变。
 
 ## 连接后端（重要）
@@ -14,19 +14,24 @@
 前端依赖后端服务，请先启动后端（Spring Boot，端口 8081），再启动前端：
 
 ```bash
-# 1. 启动后端：在 D:\workSpace\springBootTest 运行 SpringBootTestApplication
-#    并先执行 sql/kimetsu_db.sql 建库
+# 1. 启动后端：在 D:\workSpace\springBootTest 打包并运行
+#    PowerShell: .\mvnw.cmd -q -DskipTests clean package
+#    java -Dfile.encoding=UTF-8 -jar target\springBootTest-0.0.1-SNAPSHOT.jar --server.port=8081
+#    账号无需建库：首次启动自动生成 data/kimetsu_users.json 并预置演示账号
 
 # 2. 启动前端
 npm install
 npm run dev
 ```
 
-`vite.config.js` 已配置代理：`/api` → `http://localhost:8081`，无需关心跨域（后端也已配置 CORS）。
+`vite.config.js` 已配置代理：`/api` → `http://localhost:8081`，无需关心跨域（后端 `@CrossOrigin` 也已兜底）。
+后端接口实现见 `D:\workSpace\springBootTest\...\AuthController.java`（ping / register / login / me）。
 
 可用演示账号：
-- `炭治郎` / 任意口令（代码内置）
-- `灶门祢豆子` / `123456`（数据库 SQL 脚本内置）
+- `炭治郎` / 任意口令（后端特判的演示账号）
+- `灶门炭治郎` / `灶门祢豆子` / `水柱义勇` / `炎柱炼狱`，口令均 `123456`（后端预置账号）
+
+> 更完整的启动/自检说明见同目录《给AI的启动速查手册.md》。
 
 ## 目录结构
 
@@ -43,7 +48,7 @@ demon-slayer-login-vue/
     ├── router/
     │   └── index.js             # 路由：/login、/register（hash 模式）
     ├── utils/
-    │   └── accounts.js          # 本地账号存储：注册/登录校验/会话
+    │   └── accounts.js          # 账号接口封装：注册/登录/会话 + token
     └── components/
         ├── SceneBackground.vue  # 背景场景：红日/山脉/云纹/星空/樱花与火星粒子
         ├── LoginCard.vue        # 登录卡片
