@@ -134,6 +134,18 @@ canvas#fx{position:absolute;inset:0;z-index:3;pointer-events:none}
 .topbar{position:absolute;top:0;left:0;right:0;z-index:8;display:flex;align-items:center;justify-content:space-between;
   padding:26px 44px;font-size:12px;letter-spacing:.42em;color:var(--sub)}
 .brand{display:flex;align-items:center;gap:16px}
+/* ===== 与登录页串联：当前队员信息 + 返回登录 ===== */
+.sessionBox{display:flex;align-items:center;gap:18px}
+.sessionBox .player{color:var(--sub);font-size:12px;letter-spacing:.28em;white-space:nowrap}
+.backBtn{font-family:inherit;font-size:11px;letter-spacing:.22em;color:var(--c1);
+  background:rgba(255,255,255,.03);border:1px solid var(--line);padding:9px 16px;
+  cursor:pointer;transition:.3s ease;white-space:nowrap}
+.backBtn:hover{border-color:var(--c1);color:var(--ink);background:var(--deep);box-shadow:0 0 18px var(--deep)}
+@media(max-width:720px){
+  .topbar{padding:18px 20px;letter-spacing:.18em}
+  .sessionBox .player{display:none}
+  .backBtn{font-size:10px;padding:7px 11px;letter-spacing:.1em}
+}
 .brand b{font-size:15px;letter-spacing:.5em;color:var(--ink);font-weight:400}
 .brand .slashmark{color:var(--c1);font-size:18px}
 .seal{width:46px;height:46px;border:2px solid var(--c2);color:var(--c1);display:grid;place-items:center;
@@ -345,7 +357,10 @@ canvas#fx{position:absolute;inset:0;z-index:3;pointer-events:none}
     <!-- 文字层 -->
     <div class="topbar">
       <div class="brand"><span class="slashmark">／</span><b>鬼滅の刃</b><span>KIMETSU NO YAIBA</span></div>
-      <div>鬼殺隊 · 甲冑隊士</div>
+      <div class="sessionBox">
+        <span class="player" id="playerName">隊士 · 未入隊</span>
+        <button class="backBtn" id="backBtn" type="button">← 返回登录 / 退出</button>
+      </div>
       <div class="seal">滅</div>
     </div>
 
@@ -628,6 +643,33 @@ canvas#fx{position:absolute;inset:0;z-index:3;pointer-events:none}
       src.connect(bp); bp.connect(g); g.connect(actx.destination); src.start();
     }catch(err){}
   }
+  /* ---------- 与登录页串联：读取会话 / 返回登录 ---------- */
+  var playerEl = document.getElementById('playerName');
+  var backBtn = document.getElementById('backBtn');
+  function readAccount(){
+    try{
+      var raw = localStorage.getItem('kimetsu_session_v1');
+      return raw ? JSON.parse(raw) : null;
+    }catch(e){ return null; }
+  }
+  var account = readAccount();
+  if (account && account.name){
+    playerEl.textContent = '隊士 · ' + account.name + (account.breath ? ' ／ ' + account.breath : '');
+  } else {
+    playerEl.textContent = '未入隊 · 体验模式';
+    backBtn.textContent = '← 返回登录';
+  }
+  backBtn.addEventListener('click', function(e){
+    e.stopPropagation(); // 避免冒泡到 scene 触发挥刀
+    try{
+      localStorage.removeItem('kimetsu_session_v1');
+      localStorage.removeItem('kimetsu_token_v1');
+    }catch(err){}
+    // Vite 服务/部署后：根路径 + hash 路由；本地双击打开时回退到本机 dev server
+    window.location.href = (location.protocol === 'file:')
+      ? 'http://localhost:5173/#/login'
+      : '/#/login';
+  });
 })();
 </script>
 </body>
